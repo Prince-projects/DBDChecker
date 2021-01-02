@@ -1,0 +1,56 @@
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+public class DeadbyDaylight extends main {
+    int timerStart = 100000; // Creating initial timer start time.
+    boolean codeStart = false; // Loo[ toggle.
+    ActionListener taskPerformer = new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+            System.out.println("Timer Complete."); // End condition check.
+        }
+    };
+    Timer dbdTimer = new Timer(timerStart, taskPerformer); // dec and init timer.
+    void screenShot() throws AWTException, InterruptedException, IOException {
+        dbdTimer.setRepeats(false);
+        dbdTimer.start(); // Start timer and ensuire no repeats.
+        
+        while (!codeStart) {
+            boolean colorOne = false;
+            boolean colorTwo = false;
+            boolean colorThree = false;
+            Thread.sleep(2000);
+            Robot droid = new Robot(); // dec Robot
+            Color checkedColor = droid.getPixelColor(82, 1018);
+            Color checkedColor1 = droid.getPixelColor(120, 1018);
+            Color checkedColor2 = droid.getPixelColor(122, 1018); // Check the colors along three individual points on your survivors health bar, to increase robustness.
+
+            if (checkedColor.getBlue() < 70 && checkedColor.getRed() > 130 && checkedColor.getGreen() < 70) {
+                colorOne = true;
+            }
+            if (checkedColor1.getBlue() < 70 && checkedColor1.getRed() > 130 && checkedColor1.getGreen() < 70) {
+                colorTwo = true;
+            }
+            if (checkedColor2.getBlue() < 70 && checkedColor2.getRed() > 130 && checkedColor2.getGreen() < 70) { // Toggle decs for colors, by reading a certain color range of health bar color variants.
+                colorThree = true;
+            }
+            if (colorOne && colorTwo && colorThree) {
+                System.out.println("Health bar Detected!");
+                dbdTimer.stop();
+                if (!dbd.isRunning()) {
+                    System.out.println("Timer stopped.");
+                    }
+                Thread.sleep(60000);
+                dbdTimer.start(); // Stops the timer for one min. Could be improved by running in a seperate thread and chaining hp bar detections but works fine rn.
+            }
+            }
+            if (dbdTimer.isRunning()) {
+                System.out.println("Time is counting down.."); // Check to ensure the timer is running.
+            }
+            if (codeStart) {
+                System.out.println("You made it to the end of the timer!.");
+                System.exit(1); //  Fin exec on timer completion.
+            }
+        }
+    }
