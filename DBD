@@ -1,0 +1,61 @@
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class DeadbyDaylight extends main { // TODO - Write GUI.
+    int randomNumScore = ThreadLocalRandom.current().nextInt(1000, 4000 + 1);
+    boolean picRelease = true;
+    int score = randomNumScore;
+    
+    void screenShot() throws AWTException, InterruptedException {
+        
+        while (!picRelease) { // Decs
+            int colorCount = 0;
+            boolean colorFound = false;
+            Thread.sleep(2000);
+            Robot droid = new Robot();
+            Rectangle screenArea1 = new Rectangle();
+            screenArea1.setBounds(82, 1018, 100, 10);
+            BufferedImage screenCap = droid.createScreenCapture(screenArea1);
+            Color[] colorSet = new Color[1000];
+
+
+            // Count colors and pixel total.
+            for (int x = 0, totalPixels = 0; x < screenCap.getWidth(); x++) {
+                for (int y = 0; y < screenCap.getHeight(); y++) {
+                    int c = screenCap.getRGB(x, y);
+                    Color color = new Color(c);
+                    colorSet[totalPixels] = color;
+                    totalPixels++;
+                }
+            }
+
+            // Check colors for a solid redish color. This is the color of the DBD Health bar.
+            for (int i = 0; i < 1000; i++) {
+                if (colorSet[i].getRed() > 80 && colorSet[i].getGreen() < 30 && colorSet[i].getBlue() < 30) {
+                    colorCount++;
+                }
+                if (colorCount > 200) {
+                    colorFound = true;
+                }
+            }
+
+            if (colorFound) { // Punishment when HP bar present.
+                System.out.println("Score reduced by 10. Get up soon!");
+                score = score - 10;
+                Thread.sleep(500);
+            }
+            if (score > 6000) { // Win condition.
+                System.out.println("You win, congrats!");
+                picRelease = true;
+            }
+            if (score < 500) { // Lose condition - Unique to this gamemode.
+                System.out.println("Your performance is subpar. You lose.");
+                picRelease = true;
+            }
+            score = score + 10; // Passive score addition, to increase score every loop.
+            System.out.println("Current score is " + score);
+            }
+
+        }
+    }
